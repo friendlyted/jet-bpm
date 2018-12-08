@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" targetNamespace="Examples" exporter="Camunda Modeler" exporterVersion="1.16.2">
+  <collaboration id="Collaboration_076h9gx">
+    <participant id="Participant_0l6gjvv" name="bpmToCamelProcessNoVars" processRef="bpmToCamelProcessNoVars" />
+    <participant id="Participant_0m8f3uv" name="bpmToCamelProcessLocalVariable" processRef="bpmToCamelProcessLocalVariable" />
+    <participant id="Participant_1atlh8k" name="bpmToCamelProcessNoSuchRoute" processRef="bpmToCamelProcessNoSuchRoute" />
+    <participant id="Participant_1hj0tqq" name="bpmToCamelProcessCamelError" processRef="bpmToCamelProcessCamelError" />
+  </collaboration>
+  <process id="bpmToCamelProcessNoVars" isExecutable="true">
+    <startEvent id="start" />
+    <serviceTask id="CamelTask1" name="Camel Call" camunda:expression="${camel.call(&#39;bpmToCamelRoute1&#39;)}">
+      <incoming>flow1</incoming>
+      <outgoing>flow2</outgoing>
+    </serviceTask>
+    <endEvent id="theEnd" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="CamelTask1" />
+    <sequenceFlow id="flow2" sourceRef="CamelTask1" targetRef="theEnd" />
+  </process>
+  <process id="bpmToCamelProcessLocalVariable" isExecutable="true">
+    <sequenceFlow id="SequenceFlow_0me15dy" sourceRef="StartEvent_0iyiiyz" targetRef="VariablesTask1" />
+    <startEvent id="StartEvent_0iyiiyz">
+      <outgoing>SequenceFlow_0me15dy</outgoing>
+    </startEvent>
+    <serviceTask id="CamelTask2" name="Camel Call" camunda:expression="${camel.call(&#39;bpmToCamelRoute2&#39;)}">
+      <extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="localVar1">${processVar1}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </extensionElements>
+      <incoming>SequenceFlow_0xf74ih</incoming>
+      <outgoing>SequenceFlow_12wms4c</outgoing>
+    </serviceTask>
+    <endEvent id="EndEvent_18slaqg">
+      <incoming>SequenceFlow_12wms4c</incoming>
+    </endEvent>
+    <sequenceFlow id="SequenceFlow_12wms4c" sourceRef="CamelTask2" targetRef="EndEvent_18slaqg" />
+    <sequenceFlow id="SequenceFlow_0xf74ih" sourceRef="VariablesTask1" targetRef="CamelTask2" />
+    <task id="VariablesTask1">
+      <extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="processVar1">val1</camunda:outputParameter>
+          <camunda:outputParameter name="processVar2">val2</camunda:outputParameter>
+        </camunda:inputOutput>
+      </extensionElements>
+      <incoming>SequenceFlow_0me15dy</incoming>
+      <outgoing>SequenceFlow_0xf74ih</outgoing>
+    </task>
+  </process>
+  <process id="bpmToCamelProcessNoSuchRoute" isExecutable="true">
+    <startEvent id="StartEvent_1if0421">
+      <outgoing>SequenceFlow_0y2d7cy</outgoing>
+    </startEvent>
+    <serviceTask id="ServiceTask_1x85e76" name="Camel Call" camunda:expression="${camel.call(&#39;noSuchRoute&#39;)}">
+      <incoming>SequenceFlow_0y2d7cy</incoming>
+      <outgoing>SequenceFlow_1pk9qyj</outgoing>
+    </serviceTask>
+    <endEvent id="EndEvent_19v2y46">
+      <incoming>SequenceFlow_1pk9qyj</incoming>
+    </endEvent>
+    <sequenceFlow id="SequenceFlow_1pk9qyj" sourceRef="ServiceTask_1x85e76" targetRef="EndEvent_19v2y46" />
+    <sequenceFlow id="SequenceFlow_0y2d7cy" sourceRef="StartEvent_1if0421" targetRef="ServiceTask_1x85e76" />
+  </process>
+  <process id="bpmToCamelProcessCamelError" isExecutable="true">
+    <startEvent id="StartEvent_0nc7fk3">
+      <outgoing>SequenceFlow_0t6k5av</outgoing>
+    </startEvent>
+    <serviceTask id="ServiceTask_0ii180w" name="Camel Call" camunda:expression="${camel.call(&#39;errorRoute&#39;)}">
+      <incoming>SequenceFlow_0t6k5av</incoming>
+      <outgoing>SequenceFlow_0pe2szh</outgoing>
+    </serviceTask>
+    <endEvent id="EndEvent_1k1us3r">
+      <incoming>SequenceFlow_0pe2szh</incoming>
+    </endEvent>
+    <sequenceFlow id="SequenceFlow_0t6k5av" sourceRef="StartEvent_0nc7fk3" targetRef="ServiceTask_0ii180w" />
+    <sequenceFlow id="SequenceFlow_0pe2szh" sourceRef="ServiceTask_0ii180w" targetRef="EndEvent_1k1us3r" />
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_smokeTestProcess">
+    <bpmndi:BPMNPlane id="BPMNPlane_smokeTestProcess" bpmnElement="Collaboration_076h9gx">
+      <bpmndi:BPMNShape id="Participant_0l6gjvv_di" bpmnElement="Participant_0l6gjvv">
+        <omgdc:Bounds x="46" y="29" width="600" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_start" bpmnElement="start">
+        <omgdc:Bounds x="163" y="139" width="35" height="35" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_17pc6si_di" bpmnElement="CamelTask1">
+        <omgdc:Bounds x="296" y="117" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_theEnd" bpmnElement="theEnd">
+        <omgdc:Bounds x="483" y="139" width="35" height="35" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow2" bpmnElement="flow2">
+        <omgdi:waypoint x="396" y="157" />
+        <omgdi:waypoint x="483" y="156" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow1" bpmnElement="flow1">
+        <omgdi:waypoint x="198" y="156" />
+        <omgdi:waypoint x="296" y="157" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_0m8f3uv_di" bpmnElement="Participant_0m8f3uv">
+        <omgdc:Bounds x="46" y="326" width="738" height="249" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_0iyiiyz_di" bpmnElement="StartEvent_0iyiiyz">
+        <omgdc:Bounds x="163" y="436" width="35" height="35" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0jbf1qz_di" bpmnElement="CamelTask2">
+        <omgdc:Bounds x="483" y="414" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_18slaqg_di" bpmnElement="EndEvent_18slaqg">
+        <omgdc:Bounds x="670" y="436" width="35" height="35" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0me15dy_di" bpmnElement="SequenceFlow_0me15dy">
+        <omgdi:waypoint x="198" y="453" />
+        <omgdi:waypoint x="285" y="454" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_12wms4c_di" bpmnElement="SequenceFlow_12wms4c">
+        <omgdi:waypoint x="583" y="454" />
+        <omgdi:waypoint x="670" y="453" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0xf74ih_di" bpmnElement="SequenceFlow_0xf74ih">
+        <omgdi:waypoint x="385" y="454" />
+        <omgdi:waypoint x="483" y="454" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Task_13ia4p1_di" bpmnElement="VariablesTask1">
+        <omgdc:Bounds x="285" y="414" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_1atlh8k_di" bpmnElement="Participant_1atlh8k">
+        <omgdc:Bounds x="46" y="635" width="600" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1if0421_di" bpmnElement="StartEvent_1if0421">
+        <omgdc:Bounds x="163" y="745" width="35" height="35" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1x85e76_di" bpmnElement="ServiceTask_1x85e76">
+        <omgdc:Bounds x="296" y="723" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_19v2y46_di" bpmnElement="EndEvent_19v2y46">
+        <omgdc:Bounds x="483" y="745" width="35" height="35" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1pk9qyj_di" bpmnElement="SequenceFlow_1pk9qyj">
+        <omgdi:waypoint x="396" y="763" />
+        <omgdi:waypoint x="483" y="762" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0y2d7cy_di" bpmnElement="SequenceFlow_0y2d7cy">
+        <omgdi:waypoint x="198" y="762" />
+        <omgdi:waypoint x="296" y="763" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_1hj0tqq_di" bpmnElement="Participant_1hj0tqq">
+        <omgdc:Bounds x="46" y="955" width="600" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_0nc7fk3_di" bpmnElement="StartEvent_0nc7fk3">
+        <omgdc:Bounds x="163" y="1065" width="35" height="35" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0ii180w_di" bpmnElement="ServiceTask_0ii180w">
+        <omgdc:Bounds x="296" y="1043" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1k1us3r_di" bpmnElement="EndEvent_1k1us3r">
+        <omgdc:Bounds x="483" y="1065" width="35" height="35" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0t6k5av_di" bpmnElement="SequenceFlow_0t6k5av">
+        <omgdi:waypoint x="198" y="1082" />
+        <omgdi:waypoint x="296" y="1083" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0pe2szh_di" bpmnElement="SequenceFlow_0pe2szh">
+        <omgdi:waypoint x="396" y="1083" />
+        <omgdi:waypoint x="483" y="1082" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

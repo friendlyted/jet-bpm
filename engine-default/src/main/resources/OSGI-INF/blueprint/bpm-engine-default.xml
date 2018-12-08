@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+
+    <ext:property-placeholder/>
+
+    <reference-list id="contexts" interface="org.apache.camel.CamelContext" availability="optional"/>
+
+    <!-- From BPM to Camel "direct://" -->
+    <bean id="camel" class="su.jet.bpm.service.camel.FromBpmToCamelDirect">
+        <property name="camelContextList" ref="contexts"/>
+        <property name="callPropertiesProvider">
+            <bean class="su.jet.bpm.service.camunda.CurrentBpmExecutionLocalVariablesProvider"/>
+        </property>
+    </bean>
+
+    <!-- From Camel "bpm://" component to BPM -->
+    <bean id="bpmStart" class="su.jet.bpm.service.camunda.CamelToBpmStart">
+        <property name="runtimeService" ref="runtimeService"/>
+    </bean>
+    <bean id="bpmSignal" class="su.jet.bpm.service.camunda.CamelToBpmSignal">
+        <property name="runtimeService" ref="runtimeService"/>
+    </bean>
+    <bean id="bpmMessage" class="su.jet.bpm.service.camunda.CamelToBpmMessage">
+        <property name="runtimeService" ref="runtimeService"/>
+    </bean>
+
+    <bean id="elManager" class="su.jet.bpm.extra.FlexibleExpressionManager">
+        <property name="resolvers">
+            <list>
+                <bean class="su.jet.bpm.extra.BlueprintELResolver">
+                    <property name="blueprintContainer" ref="blueprintContainer"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="processEngineFactory" init-method="init" destroy-method="destroy"
+          class="org.camunda.bpm.extension.osgi.engine.ProcessEngineFactoryWithELResolver">
+        <property name="processEngineConfiguration">
+            <bean class="org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration"/>
+        </property>
+        <property name="bundle" ref="blueprintBundle"/>
+        <property name="expressionManager" ref="elManager"/>
+    </bean>
+
+    <bean id="processEngine"
+          factory-ref="processEngineFactory"
+          factory-method="getObject"
+          destroy-method="close"
+    />
+
+    <bean id="runtimeService" factory-ref="processEngine" factory-method="getRuntimeService"/>
+    <bean id="repositoryService" factory-ref="processEngine" factory-method="getRepositoryService"/>
+    <bean id="formService" factory-ref="processEngine" factory-method="getFormService"/>
+    <bean id="taskService" factory-ref="processEngine" factory-method="getTaskService"/>
+    <bean id="historyService" factory-ref="processEngine" factory-method="getHistoryService"/>
+    <bean id="identityService" factory-ref="processEngine" factory-method="getIdentityService"/>
+    <bean id="managementService" factory-ref="processEngine" factory-method="getManagementService"/>
+
+    <!-- BPM services -->
+    <service ref="processEngine" interface="org.camunda.bpm.engine.ProcessEngine"/>
+    <service ref="runtimeService" interface="org.camunda.bpm.engine.RuntimeService"/>
+    <service ref="repositoryService" interface="org.camunda.bpm.engine.RepositoryService"/>
+    <service ref="formService" interface="org.camunda.bpm.engine.FormService"/>
+    <service ref="taskService" interface="org.camunda.bpm.engine.TaskService"/>
+    <service ref="historyService" interface="org.camunda.bpm.engine.HistoryService"/>
+    <service ref="identityService" interface="org.camunda.bpm.engine.IdentityService"/>
+    <service ref="managementService" interface="org.camunda.bpm.engine.ManagementService"/>
+
+
+</blueprint>
+

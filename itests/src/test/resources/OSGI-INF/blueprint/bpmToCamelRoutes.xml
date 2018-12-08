@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+
+
+    <camelContext id="bpmToCamelContext1" xmlns="http://camel.apache.org/schema/blueprint">
+        <route id="bpmToCamelRoute1">
+            <from uri="direct:bpmToCamelRoute1"/>
+            <to uri="mock:bpmToCamelRoute1"/>
+        </route>
+
+        <route id="bpmToCamelRoute2">
+            <from uri="direct:bpmToCamelRoute2"/>
+            <to uri="mock:bpmToCamelRoute2"/>
+        </route>
+
+        <route id="bpmToCamelRoute3">
+            <from uri="direct:errorRoute"/>
+            <throwException message="routeException" exceptionType="java.lang.RuntimeException"/>
+            <to uri="mock:bpmToCamelRoute3"/>
+        </route>
+    </camelContext>
+
+</blueprint>
