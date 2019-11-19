@@ -35,7 +35,7 @@ public class BpmStartProducer extends DefaultProducer {
 
         final BpmStartService service = getEndpoint().getBpmStartService();
         if (service == null) {
-            throw new NoBpmServiceException("Not BPM start service provided");
+            throw new NoBpmServiceException("No BPM start service provided");
         }
 
         final String processId;
