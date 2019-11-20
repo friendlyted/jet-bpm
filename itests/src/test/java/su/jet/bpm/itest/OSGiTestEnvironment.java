@@ -29,7 +29,7 @@ public class OSGiTestEnvironment implements ConfigurationFactory {
             keepRuntimeFolder(),
 //          logLevel(LogLevelOption.LogLevel.TRACE),
             doNotModifyLogConfiguration(),
-//          debugConfiguration("5005", true),
+          debugConfiguration("5005", true),
             CoreOptions.junitBundles()
         );
     }

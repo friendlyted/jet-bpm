@@ -1,10 +1,11 @@
 package su.jet.bpm.service.camel;
 
 import org.apache.camel.CamelContext;
-import org.apache.camel.ProducerTemplate;
+import org.apache.camel.Exchange;
+import org.apache.camel.builder.ExchangeBuilder;
 import su.jet.bpm.service.api.FromBpmService;
 import su.jet.bpm.service.api.FromBpmServiceException;
-import su.jet.bpm.service.api.PropertiesProvider;
+import su.jet.bpm.service.api.PropertiesService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Map;
 public class FromBpmToCamelDirect implements FromBpmService {
 
     private List<CamelContext> camelContextList = new ArrayList<>();
-    private PropertiesProvider callPropertiesProvider;
+    private PropertiesService callPropertiesService;
 
     public List<CamelContext> getCamelContextList() {
         return camelContextList;
@@ -23,12 +24,12 @@ public class FromBpmToCamelDirect implements FromBpmService {
         this.camelContextList = camelContextList;
     }
 
-    public PropertiesProvider getCallPropertiesProvider() {
-        return callPropertiesProvider;
+    public PropertiesService getCallPropertiesService() {
+        return callPropertiesService;
     }
 
-    public void setCallPropertiesProvider(PropertiesProvider callPropertiesProvider) {
-        this.callPropertiesProvider = callPropertiesProvider;
+    public void setCallPropertiesService(PropertiesService callPropertiesService) {
+        this.callPropertiesService = callPropertiesService;
     }
 
     @Override
@@ -36,10 +37,29 @@ public class FromBpmToCamelDirect implements FromBpmService {
         for (CamelContext context : getCamelContextList()) {
             for (String name : context.getEndpointMap().keySet()) {
                 if (nameIsTarget(targetName, name)) {
-                    final ProducerTemplate producer = context.createProducerTemplate();
-                    producer.setDefaultEndpointUri(name);
-                    final Map<String, Object> headers = getCallPropertiesProvider().getProperties();
-                    producer.sendBodyAndHeaders(null, headers);
+                    final Object body = getCallPropertiesService().getBody();
+                    final Map<String, Object> properties = getCallPropertiesService().getProperties();
+                    final ExchangeBuilder builder = ExchangeBuilder
+                            .anExchange(context)
+                            .withBody(body);
+
+                    properties.forEach(builder::withHeader);
+
+                    final Exchange exchange = builder.build();
+                    context.createProducerTemplate().send(name, exchange);
+
+                    if (exchange.getException() != null) {
+                        throw new FromBpmServiceException(exchange.getException());
+                    }
+
+                    final Object newBody = exchange.getIn().getBody();
+                    final Map<String, Object> newProperties = exchange.getIn().getHeaders();
+
+                    if (newBody != null) {
+                        getCallPropertiesService().setBody(newBody);
+                    }
+                    getCallPropertiesService().setProperties(newProperties);
+
                     return;
                 }
             }
@@ -48,7 +68,6 @@ public class FromBpmToCamelDirect implements FromBpmService {
     }
 
     private boolean nameIsTarget(String directName, String name) {
-        return name.equals("direct://" + directName) ||
-                name.startsWith("direct://" + directName + "?");
+        return name.equals("direct://" + directName) || name.startsWith("direct://" + directName + "?");
     }
 }

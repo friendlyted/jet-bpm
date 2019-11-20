@@ -1,13 +1,14 @@
 package su.jet.bpm.itest;
 
 import org.apache.camel.CamelContext;
-import org.apache.camel.CamelExecutionException;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.impl.javax.el.ELException;
+import org.camunda.bpm.engine.impl.persistence.entity.ProcessInstanceWithVariablesImpl;
 import org.camunda.bpm.engine.task.Task;
+import org.camunda.bpm.engine.variable.VariableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -121,9 +122,18 @@ public class KarafDistributionTest {
         } catch (Exception ex) {
             assertEquals(ProcessEngineException.class, ex.getClass());
             assertEquals(ELException.class, ex.getCause().getClass());
-            assertEquals(CamelExecutionException.class, ex.getCause().getCause().getClass());
+            assertEquals(FromBpmServiceException.class, ex.getCause().getCause().getClass());
             assertEquals(RuntimeException.class, ex.getCause().getCause().getCause().getClass());
-
         }
+    }
+
+    @Test
+    public void testBpmCamelHeaders() {
+        final ProcessInstanceWithVariablesImpl process = (ProcessInstanceWithVariablesImpl) runtimeService.startProcessInstanceByKey("bpmCamelHeaders");
+
+        final VariableMap variables = process.getVariables();
+
+        assertEquals(variables.get("BODY"), "NewBody");
+        assertEquals(variables.get("testHeader"), "testHeaderValue");
     }
 }

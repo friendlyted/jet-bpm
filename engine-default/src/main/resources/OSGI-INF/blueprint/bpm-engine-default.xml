@@ -9,8 +9,8 @@
     <!-- From BPM to Camel "direct://" -->
     <bean id="camel" class="su.jet.bpm.service.camel.FromBpmToCamelDirect">
         <property name="camelContextList" ref="contexts"/>
-        <property name="callPropertiesProvider">
-            <bean class="su.jet.bpm.service.camunda.CurrentBpmExecutionLocalVariablesProvider"/>
+        <property name="callPropertiesService">
+            <bean class="su.jet.bpm.service.camunda.CurrentBpmExecutionLocalVariablesService"/>
         </property>
     </bean>
 
