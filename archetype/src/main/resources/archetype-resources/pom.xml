@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>${groupId}</groupId>
+    <artifactId>${artifactId}</artifactId>
+    <version>${version}</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>routes</module>
+        <module>processes</module>
+        <module>features</module>
+        <module>assembly</module>
+        <module>itest</module>
+    </modules>
+
+    <properties>
+        <!--
+            Версии зависимостей
+        -->
+        <camunda-bpm.version>${camunda-bpm-version}</camunda-bpm.version>
+        <camunda-osgi.version>${camunda-osgi-version}</camunda-osgi.version>
+        <camel.version>${camel-version}</camel.version>
+        <sl4j.version>${sl4j-version}</sl4j.version>
+        <log4j.version>${log4j-version}</log4j.version>
+        <junit.version>${junit-version}</junit.version>
+        <mockito.version>${mockito-version}</mockito.version>
+        <karaf.version>${karaf-version}</karaf.version>
+        <!--
+            Требуется для однозначного определения кодировки файлов ресурсов.
+            Если не указать, сборка на системах с разными системными кодировками может отличаться после копирования файлов ресурсов.
+        -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${artifactId}-routes</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${artifactId}-processes</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${artifactId}-features</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${artifactId}-assembly</artifactId>
+                <version>${project.version}</version>
+                <type>zip</type>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${artifactId}-itest</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </plugin>
+                <!--
+                    Плагин для сборки модулей в OSGi-bundles
+                -->
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>${karaf.version}</version>
+                    <!--
+                        Позволяет использовать packaging = bundle.
+                    -->
+                    <extensions>true</extensions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

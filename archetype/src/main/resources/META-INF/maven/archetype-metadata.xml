@@ -1,0 +1,86 @@
+<archetype-descriptor
+        xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0
+        http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd"
+        xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        name="bpm-archetype">
+    <requiredProperties>
+        <requiredProperty key="camunda-bpm-version">
+            <defaultValue>7.10.0</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="camunda-osgi-version">
+            <defaultValue>5.1.0</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="camel-version">
+            <defaultValue>2.23.0</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="sl4j-version">
+            <defaultValue>1.7.25</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="log4j-version">
+            <defaultValue>1.2.17</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="junit-version">
+            <defaultValue>4.12</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="mockito-version">
+            <defaultValue>2.16.0</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="karaf-version">
+            <defaultValue>4.2.1</defaultValue>
+        </requiredProperty>
+        <!-- -->
+        <requiredProperty key="name">
+            <defaultValue>myProject</defaultValue>
+        </requiredProperty>
+        <!-- -->
+        <requiredProperty key="groupId">
+            <defaultValue>su.jet.cpsb</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="artifactId">
+            <defaultValue>${name}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="version">
+            <defaultValue>1.0-SNAPSHOT</defaultValue>
+        </requiredProperty>
+
+    </requiredProperties>
+
+    <modules>
+        <module id="${name}-routes" dir="routes"></module>
+        <module id="${name}-processes" dir="processes"></module>
+        <module id="${name}-features" dir="features">
+            <fileSets>
+                <fileSet filtered="true">
+                    <directory>src/main/resources</directory>
+                    <includes>
+                        <include>**/*</include>
+                    </includes>
+                </fileSet>
+            </fileSets>
+        </module>
+        <module id="${name}-assembly" dir="assembly"></module>
+        <module id="${name}-itest" dir="itest">
+            <fileSets>
+                <fileSet filtered="true" packaged="true">
+                    <directory>src/test/java</directory>
+                    <includes>
+                        <include>**/*</include>
+                    </includes>
+                </fileSet>
+                <fileSet filtered="true">
+                    <directory>src/test/resources</directory>
+                    <includes>
+                        <include>META-INF/**/*</include>
+                    </includes>
+                </fileSet>
+                <fileSet>
+                    <directory>src/test/resources</directory>
+                    <includes>
+                        <include>OSGI-INF/**/*</include>
+                    </includes>
+                </fileSet>
+            </fileSets>
+        </module>
+    </modules>
+</archetype-descriptor>

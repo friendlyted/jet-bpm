@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="${project.parent.artifactId}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+    <feature name="${rootArtifactId}-routes" version="${project.version}">
+        <bundle>mvn:${project.groupId}/${rootArtifactId}-routes/${project.version}</bundle>
+        <bundle>mvn:${project.groupId}/${rootArtifactId}-processes/${project.version}</bundle>
+    </feature>
+</features>

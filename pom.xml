@@ -29,6 +29,7 @@
         <module>features</module>
         <module>assembly</module>
         <module>itests</module>
+        <module>archetype</module>
     </modules>
 
     <dependencyManagement>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0"
+           xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+
+    <ext:property-placeholder/>
+
+    <!-- BPM services -->
+    <reference id="processEngine" interface="org.camunda.bpm.engine.ProcessEngine"/>
+    <reference id="runtimeService" interface="org.camunda.bpm.engine.RuntimeService"/>
+    <reference id="repositoryService" interface="org.camunda.bpm.engine.RepositoryService"/>
+    <reference id="formService" interface="org.camunda.bpm.engine.FormService"/>
+    <reference id="taskService" interface="org.camunda.bpm.engine.TaskService"/>
+    <reference id="historyService" interface="org.camunda.bpm.engine.HistoryService"/>
+    <reference id="identityService" interface="org.camunda.bpm.engine.IdentityService"/>
+    <reference id="managementService" interface="org.camunda.bpm.engine.ManagementService"/>
+
+
+</blueprint>
+
